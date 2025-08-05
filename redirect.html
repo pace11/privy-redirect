@@ -1,16 +1,51 @@
-<!-- redirect.html -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="refresh" content="0;url=solanaappkit://auth/login-callback" />
-    <title>Redirecting...</title>
-    <script>
-      // Fallback untuk redirect manual kalau meta tag gagal
-      window.location.href = "solanaappkit://auth/login-callback";
-    </script>
-  </head>
-  <body>
-    <p>Redirecting to Solana App...</p>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <title>Redirecting...</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 3rem;
+    }
+    #manual-redirect {
+      display: none;
+      margin-top: 1rem;
+    }
+  </style>
+</head>
+<body>
+  <p>Redirecting to the Solana App...</p>
+  <p id="manual-redirect">
+    If you are not redirected, <a id="manual-link" href="#">tap here</a>.
+  </p>
+
+  <script>
+    // Helper to get query param like ?token=abc
+    function getQueryParam(name) {
+      const url = new URL(window.location.href);
+      return url.searchParams.get(name);
+    }
+
+    const token = getQueryParam("token");
+    const redirectURL = token
+      ? `solanaappkit://auth/login-callback?token=${token}`
+      : `solanaappkit://auth/login-callback`;
+
+    // Try auto-redirect
+    window.location.href = redirectURL;
+
+    // Fallback after 2s to show manual link
+    setTimeout(() => {
+      const manualLink = document.getElementById("manual-link");
+      const manualSection = document.getElementById("manual-redirect");
+      if (manualLink && manualSection) {
+        manualLink.href = redirectURL;
+        manualSection.style.display = "block";
+      }
+    }, 2000);
+  </script>
+</body>
 </html>
